@@ -12,6 +12,18 @@ export const UserStorage = ({ children }) => {
   const [loading, setLoading] = React.useState(null);
   const [error, setError] = React.useState(null);
 
+  async function fetchWithTimeout(url, options, time) {
+    time = time || 5000;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), time);
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  }
+
   async function getUser(token) {
     const { url, options } = USER_GET(token);
     try {
@@ -29,8 +41,7 @@ export const UserStorage = ({ children }) => {
       setError(null);
       setLoading(true);
       const { url, options } = TOKEN_POST({ username, password });
-      const response = await fetch(url, options);
-
+      const response = await fetchWithTimeout(url, options);
       if (!response.ok) {
         throw new Error(`Error: Usuário inválido`);
       }
