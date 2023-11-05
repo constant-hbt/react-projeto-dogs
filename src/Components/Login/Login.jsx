@@ -17,7 +17,7 @@ const Login = () => {
   }
 
   return (
-    <section className={styles.login}>
+    <section className={`${styles.login} animeLeft`}>
       <Head title="Login" description="Login de usuário" />
       <div className={styles.forms}>
         <Routes>
